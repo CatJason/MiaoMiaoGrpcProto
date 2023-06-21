@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package string_service;
+
+service StringService {
+  rpc GetString(StringRequest) returns (StringResponse) {}
+}
+
+message StringRequest {
+  // 可以添加其他字段，用于传递请求参数
+}
+
+message StringResponse {
+  string value = 1;
+}
