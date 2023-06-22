@@ -42,11 +42,35 @@ android {
 }
 
 protobuf {
-    //配置生成目录，编译后会在 build 的目录下生成对应的java文件
+    protoc {
+        if (System.getProperty("os.arch").compareTo("aarch64") == 0) {
+            artifact = "com.google.protobuf:protoc:3.19.1:osx-x86_64"
+        } else {
+            artifact = "com.google.protobuf:protoc:3.19.1"
+        }
+    }
+    plugins {
+        grpc {
+            if (System.getProperty("os.arch").compareTo("aarch64") == 0) {
+                artifact = 'io.grpc:protoc-gen-grpc-java:1.56.0:osx-x86_64'
+            } else {
+                artifact = 'io.grpc:protoc-gen-grpc-java:1.56.0'
+            }
+        }
+    }
     generateProtoTasks {
         all().each { task ->
+            task.generateDescriptorSet = true
             task.builtins {
-                java {}
+                // In most cases you don't need the full Java output
+                // if you use the lite output.
+                java {
+                    option "lite"
+                }
+            }
+            task.plugins {
+                //javalite {}
+                grpc { option 'lite' }
             }
         }
     }
